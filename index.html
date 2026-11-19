@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>과몰입 응원단 — 한 줄 치면 우주까지 응원해요</title>
+<meta name="description" content="응원할 일을 한 줄 치면 응원단이 우주 규모로 과하게 응원해 주는 메시지 카드예요.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 만드는 화면 -->
+<section id="compose" hidden>
+  <div class="c-lines" aria-hidden="true"></div>
+  <form id="form" class="c-box" autocomplete="off">
+    <p class="c-kicker">링크로 보내는 메시지 카드</p>
+    <h1 class="c-title"><span>과몰입</span><span>응원단</span></h1>
+    <p class="c-sub">응원할 일을 한 줄만 치세요.<br>나머지는 응원단이 과하게 알아서 합니다.</p>
+
+    <label class="c-label" for="topic">무엇을 응원할까요?</label>
+    <input id="topic" class="c-input" type="text" maxlength="30" placeholder="예) 내일 면접" enterkeyhint="done">
+    <div id="chips" class="c-chips" aria-label="예시"></div>
+
+    <p class="c-label">얼마나 과하게?</p>
+    <div id="levels" class="c-levels" role="radiogroup" aria-label="과함 단계">
+      <button type="button" role="radio" data-l="1" aria-checked="false">과함</button>
+      <button type="button" role="radio" data-l="2" aria-checked="true">매우 과함</button>
+      <button type="button" role="radio" data-l="3" aria-checked="false">민폐</button>
+    </div>
+
+    <button id="make" class="c-go" type="submit">응원 링크 만들기</button>
+
+    <div id="result" class="c-result" hidden>
+      <input id="link" class="c-link" type="text" readonly aria-label="응원 링크">
+      <div class="c-row">
+        <button id="copy" type="button" class="c-btn">링크 복사</button>
+        <button id="open" type="button" class="c-btn c-btn-2">내가 먼저 받아 보기</button>
+      </div>
+      <p id="copied" class="c-copied" aria-live="polite"></p>
+    </div>
+
+    <ul class="c-notes">
+      <li>쓴 글은 링크 안에만 담겨요. 서버에 저장하지 않아요.</li>
+      <li>이름 · 연락처는 받지 않아요. 보낼 때는 링크를 복사해서 보내세요.</li>
+      <li>카드에 나오는 응원 인원과 속보는 전부 과장한 <b>모의 데이터</b>예요.</li>
+      <li>그림 · 행성 · 목소리 · 효과음은 전부 직접 그리고 합성했어요.</li>
+    </ul>
+  </form>
+</section>
+
+<!-- 받는 화면 -->
+<section id="card" hidden>
+  <div id="space" aria-hidden="true">
+    <canvas id="gl"></canvas>
+    <div id="rimfans"></div>
+    <div id="here">여기서 응원 중</div>
+    <div id="earth" class="sp"><i class="land l1"></i><i class="land l2"></i><i class="land l3"></i><div id="rim"></div></div>
+    <div id="solar" class="sp">
+      <div class="sun"><b></b><b></b><em></em></div>
+      <div class="orbit o1"><i></i></div>
+      <div class="orbit o2"><i></i></div>
+      <div class="orbit o3"><i class="home"></i></div>
+      <div class="orbit o4"><i></i></div>
+    </div>
+    <div id="galaxy" class="sp"><div class="g-tilt"><canvas id="galaxyCv" width="900" height="900"></canvas></div></div>
+  </div>
+  <p id="spaceText" aria-live="polite"></p>
+
+  <div id="world">
+    <div id="shaker">
+      <div class="lines" aria-hidden="true"></div>
+      <div class="dots" aria-hidden="true"></div>
+      <div id="title"></div>
+      <div id="squad" aria-hidden="true"></div>
+      <div id="heads"></div>
+      <div id="shouts" aria-hidden="true"></div>
+      <div id="tapHint">화면을 마구 눌러 같이 응원하세요</div>
+      <div id="counter" hidden><small>현재 응원 인원 (과장이에요)</small><strong id="count">1 명</strong></div>
+      <div id="ticker" hidden><b>속보</b><div class="tk"><span id="tickText"></span></div></div>
+    </div>
+  </div>
+
+  <div id="polite" hidden><p id="politeText"></p></div>
+
+  <div id="envelope">
+    <button id="env" type="button" aria-label="응원 카드 열기">
+      <span class="env-body"><span class="env-flap"></span><span class="env-seal">응원</span></span>
+    </button>
+    <p class="env-t">응원이 도착했어요</p>
+    <p class="env-s">눌러서 열어 보세요 · 소리가 나요</p>
+    <p class="env-n">응원 인원과 속보는 전부 과장한 모의 데이터예요</p>
+  </div>
+
+  <div id="finale" hidden>
+    <p id="fin1"></p>
+    <p id="fin2"></p>
+    <p id="fin3"></p>
+    <div class="f-row">
+      <button id="more" type="button" class="f-btn f-main">더 응원해</button>
+      <button id="reply" type="button" class="f-btn f-reply">답장하기</button>
+      <button id="again" type="button" class="f-btn">처음부터 다시</button>
+      <button id="mine" type="button" class="f-btn">나도 보내기</button>
+    </div>
+    <p class="f-note">휴대폰이면 흔들어도 응원해요</p>
+    <div id="replyBox" hidden>
+      <p class="r-t">한마디 답장을 링크로 돌려보내요</p>
+      <div id="rchips" class="r-chips"></div>
+      <input id="rtext" class="r-input" type="text" maxlength="30" placeholder="직접 쓰기 (30자까지)" aria-label="답장 한마디" enterkeyhint="done">
+      <button id="rmake" type="button" class="f-btn f-go">답장 링크 만들기</button>
+      <div id="rres" hidden>
+        <input id="rlink" class="r-input r-link" type="text" readonly aria-label="답장 링크">
+        <button id="rcopy" type="button" class="f-btn">링크 복사</button>
+        <p id="rcopied" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+  <button id="mute" type="button" aria-pressed="false">소리 끄기</button>
+</section>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <clipPath id="fc"><path d="M24 150C12 108 16 58 60 56c44 2 48 52 36 94-4 12-68 12-72 0z"/></clipPath>
+</defs></svg>
+<script src="space.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
